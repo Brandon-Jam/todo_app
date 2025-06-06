@@ -1,41 +1,60 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Task index{% endblock %}
+{% block title %}Ma To-Do List{% endblock %}
+  
 
-{% block body %}
-    <h1>Task index</h1>
+{% block content %}
+    <h1 class="text-danger">🗒️ Ma To-Do List</h1>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Title</th>
-                <th>Description</th>
-                <th>IsDone</th>
-                <th>CreatedAt</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for task in tasks %}
-            <tr>
-                <td>{{ task.id }}</td>
-                <td>{{ task.title }}</td>
-                <td>{{ task.description }}</td>
-                <td>{{ task.isDone ? 'Yes' : 'No' }}</td>
-                <td>{{ task.createdAt ? task.createdAt|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('app_task_show', {'id': task.id}) }}">show</a>
-                    <a href="{{ path('app_task_edit', {'id': task.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="6">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <form method="post" action="{{ path('app_task_new') }}" class="d-flex gap-2 mb-3">
+                <button type="submit" class="btn btn-success">Ajouter</button>
+            </form>
+            
 
-    <a href="{{ path('app_task_new') }}">Create new</a>
+            {% if tasks is empty %}
+                <div class="alert alert-info mb-0">Aucune tâche pour le moment.</div>
+            {% else %}
+                <ul class="list-group">
+                    {% for task in tasks %}
+                    
+                    <div class="text-danger">test</div>
+                        <li class="list-group-item">
+    <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+        <div class="btn-group btn-group-sm mt-2 mt-md-0 col-1">
+            <form method="post" action="{{ path('app_task_edit', {id: task.id}) }}" class="d-inline">
+                <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ task.id) }}">
+                <input type="hidden" name="toggle_done" value="1">
+                <button class="btn btn-sm">
+                {{ task.isDone ? '✅' : '☐' }}
+                </button>
+            </form>
+        </div>
+
+        <!-- Gauche : titre + description -->
+        <div class="me-auto col-8">
+            <div class="fw-bold">{{ task.title }}</div>
+            <div class="text-muted">{{ task.description }}</div>
+        </div>
+
+        <!-- Droite : boutons -->
+        <div class="btn-group btn-group-sm mt-2 mt-md-0">
+            <a href="{{ path('app_task_edit', {id: task.id}) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-center">✏️</a>
+            <a href="{{ path('app_task_show', {id: task.id}) }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center">👁️</a>
+            <form method="post" action="{{ path('app_task_delete', {id: task.id}) }}" class="btn btn-outline-danger d-inline p-0 m-0" onsubmit="return confirm('Supprimer cette tâche ?');">
+                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+                <button type="submit" class="btn btn-outline-danger border-0 d-flex align-items-center justify-content-center">🗑️</button>
+            </form>
+        </div>
+
+    </div>
+</li>
+
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

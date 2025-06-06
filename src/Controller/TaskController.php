@@ -56,20 +56,32 @@ final class TaskController extends AbstractController
     #[Route('/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Task $task, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(TaskForm::class, $task);
-        $form->handleRequest($request);
+            // 🔐 Protection CSRF
+    if (
+        $request->isMethod('POST') &&
+        $request->request->has('toggle_done') &&
+        $this->isCsrfTokenValid('edit' . $task->getId(), $request->request->get('_token'))
+    ) {
+        $task->setIsDone(!$task->IsDone());
+        $entityManager->flush();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('task/edit.html.twig', [
-            'task' => $task,
-            'form' => $form,
-        ]);
+        return $this->redirectToRoute('app_task_index');
     }
+
+    // Sinon, édition classique
+    $form = $this->createForm(Task::class, $task);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $entityManager->flush();
+        return $this->redirectToRoute('app_task_index');
+    }
+
+    return $this->render('task/edit.html.twig', [
+        'form' => $form,
+        'task' => $task,
+    ]);
+}
 
     #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
     public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
