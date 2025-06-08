@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 
+
 class TaskForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -18,10 +19,9 @@ class TaskForm extends AbstractType
             ->add('title')
             ->add('description')
             ->add('date', DateType::class, [
-            'widget' => 'single_text',
-            'label' => 'Date limite'
-    ]);
-        ;
+                'widget' => 'single_text',
+                'label' => 'Date limite'
+            ]);;
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+
 #[Route('/task')]
 final class TaskController extends AbstractController
 {
@@ -72,7 +73,7 @@ final class TaskController extends AbstractController
     }
 
     // Sinon, édition classique
-    $form = $this->createForm(Task::class, $task);
+    $form = $this->createForm(TaskForm::class, $task);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {
