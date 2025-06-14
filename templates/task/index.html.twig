@@ -16,14 +16,19 @@
 				<div class="alert alert-info mb-0">Aucune tâche pour le moment.</div>
 			{% else %}
 				<ul class="list-group">
-					{% set currentDate = null %}
+					{% set currentDate = '' %}
 					{% for task in tasks %}
-						{% if task.date|date('Y-m-d') != currentDate %}
-							<div>
-								<h5 class="mt-4 text-primary">{{ task.date|date('d/m/Y') }}</h5>
-							</div>
-							{% set currentDate = task.date|date('Y-m-d') %}
+			{% if task.date|date('Y-m-d') != currentDate %}
+				<div>
+					<h5 class="mt-4 text-primary">
+						{{ task.date|date('d/m/Y') }}
+						{% if task.date|date('Y-m-d') == today %}
+							<span class="badge bg-success">Aujourd'hui</span>
 						{% endif %}
+					</h5>
+				</div>
+				{% set currentDate = task.date|date('Y-m-d') %}
+			{% endif %}
 						<li class="list-group-item">
 							<div class="d-flex justify-content-between align-items-center flex-wrap">
 								<div class="btn-group btn-group-sm mt-2 mt-md-0 col-1">
@@ -37,7 +42,7 @@
 										</button>
 									</form>
 								</div>
-
+				
 								<div class="me-auto col-8">
 									<div class="fw-bold">{{ task.title }}</div>
 									<div class="text-muted">{{ task.description }}</div>
