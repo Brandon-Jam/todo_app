@@ -15,6 +15,14 @@
 			{% if groupedTasks is empty %}
     <div class="alert alert-info mb-0">Aucune tâche pour le moment.</div>
 {% else %}
+
+<div class="mb-3 d-flex justify-content-end gap-2 flex-wrap">
+    <select id="filterStatus" class="form-select w-auto">
+        <option value="all">Tous</option>
+        <option value="done">Fait</option>
+        <option value="todo">À faire</option>
+    </select>
+</div>
     <ul class="list-group">
         {% for dateKey, data in groupedTasks %}
             {% set total = data.tasks|length %}
@@ -36,7 +44,9 @@
             </li>
 
             {% for task in data.tasks %}
-                <li class="list-group-item {{ task.isDone ? 'list-group-item-success' }}">
+               <li class="list-group-item {{ task.isDone ? 'list-group-item-success' }}"
+			       data-status="{{ task.isDone ? 'done' : 'todo' }}"
+>
                     <div class="d-flex justify-content-between align-items-center flex-wrap">
 
                         {# Bouton toggle #}
@@ -77,4 +87,24 @@
 
 		</div>
 	</div>
+
+	<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const filterSelect = document.getElementById('filterStatus');
+
+    filterSelect.addEventListener('change', () => {
+        const filterValue = filterSelect.value;
+
+        document.querySelectorAll('ul.list-group').forEach(group => {
+            const taskItems = group.querySelectorAll('li.list-group-item:not(.active)');
+
+            taskItems.forEach(item => {
+                const status = item.dataset.status;
+                item.style.display = (filterValue === 'all' || filterValue === status) ? '' : 'none';
+            });
+        });
+    });
+});
+</script>
 {% endblock %}
+
