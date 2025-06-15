@@ -66,6 +66,7 @@ final class TaskController extends AbstractController
     {
             // 🔐 Protection CSRF
     if (
+        
         $request->isMethod('POST') &&
         $request->request->has('toggle_done') &&
         $this->isCsrfTokenValid('edit' . $task->getId(), $request->request->get('_token'))
@@ -77,7 +78,9 @@ final class TaskController extends AbstractController
     }
 
     // Sinon, édition classique
-    $form = $this->createForm(TaskForm::class, $task);
+    $form = $this->createForm(TaskForm::class, $task, [
+        'user' => $this->getUser(), // 🔑 clé indispensable pour filtrer les tags
+    ]);
     $form->handleRequest($request);
 
     if ($form->isSubmitted() && $form->isValid()) {

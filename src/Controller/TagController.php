@@ -59,6 +59,9 @@ final class TagController extends AbstractController
     #[Route('/{id}/edit', name: 'app_tag_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Tag $tag, EntityManagerInterface $entityManager): Response
     {
+        if ($tag->getOwner() !== $this->getUser()) {
+        throw $this->createAccessDeniedException("Ce tag ne vous appartient pas.");
+        }
         $form = $this->createForm(TagForm::class, $tag);
         $form->handleRequest($request);
 

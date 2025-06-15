@@ -16,15 +16,7 @@ class TagForm extends AbstractType
     {
         $builder
             ->add('name')
-            ->add('owner', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
-            ])
-            ->add('tasks', EntityType::class, [
-                'class' => Task::class,
-                'choice_label' => 'id',
-                'multiple' => true,
-            ])
+           
         ;
     }
 
