@@ -12,55 +12,69 @@
 				<button type="submit" class="btn btn-success">Ajouter</button>
 			</form>
 
-			{% if tasks is empty %}
-				<div class="alert alert-info mb-0">Aucune tâche pour le moment.</div>
-			{% else %}
-				<ul class="list-group">
-					{% set currentDate = '' %}
-					{% for task in tasks %}
-			{% if task.date|date('Y-m-d') != currentDate %}
-				<div>
-					<h5 class="mt-4 text-primary">
-						{{ task.date|date('d/m/Y') }}
-						{% if task.date|date('Y-m-d') == today %}
-							<span class="badge bg-success">Aujourd'hui</span>
-						{% endif %}
-					</h5>
-				</div>
-				{% set currentDate = task.date|date('Y-m-d') %}
-				{% endif %}
-						<li class="list-group-item">
-							<div class="d-flex justify-content-between align-items-center flex-wrap">
-								<div class="btn-group btn-group-sm mt-2 mt-md-0 col-1">
-									<form method="post" action="{{ path('app_task_edit', {id: task.id}) }}" class="d-inline">
-										<input type="hidden" name="_token" value="{{ csrf_token('edit' ~ task.id) }}">
-										<input type="hidden" name="toggle_done" value="1">
-										<button class="btn btn-sm">
-											<span style="display: inline-block; width: 1.5em; text-align: center;">
-												{{ task.isDone ? '✅' : '☐' }}
-											</span>
-										</button>
-									</form>
-								</div>
-				
-								<div class="me-auto col-8">
-									<div class="fw-bold">{{ task.title }}</div>
-									<div class="text-muted">{{ task.description }}</div>
-								</div>
+			{% if groupedTasks is empty %}
+    <div class="alert alert-info mb-0">Aucune tâche pour le moment.</div>
+{% else %}
+    <ul class="list-group">
+        {% for dateKey, data in groupedTasks %}
+            {% set total = data.tasks|length %}
+            {% set done = data.doneCount %}
 
-								<div class="btn-group btn-group-sm mt-2 mt-md-0">
-									<a href="{{ path('app_task_edit', {id: task.id}) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-center">✏️</a>
-									<a href="{{ path('app_task_show', {id: task.id}) }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center">👁️</a>
-									<form method="post" action="{{ path('app_task_delete', {id: task.id}) }}" class="btn btn-outline-danger d-inline p-0 m-0" onsubmit="return confirm('Supprimer cette tâche ?');">
-										<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
-										<button type="submit" class="btn btn-outline-danger border-0 d-flex align-items-center justify-content-center">🗑️</button>
-									</form>
-								</div>
-							</div>
-						</li>
-					{% endfor %}
-				</ul>
-			{% endif %}
+            <li class="list-group-item active">
+                <div class="d-flex justify-content-between align-items-center flex-wrap">
+                    <div class="fw-bold">
+                        {{ data.date|date('d/m/Y') }}
+                        {% if dateKey == today %}
+                            <span class="badge bg-light text-dark ms-2">Aujourd’hui</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <span class="badge bg-success me-1">{{ done }} validée{{ done > 1 ? 's' : '' }}</span>
+                        <span class="badge bg-primary">{{ total }} tâche{{ total > 1 ? 's' : '' }}</span>
+                    </div>
+                </div>
+            </li>
+
+            {% for task in data.tasks %}
+                <li class="list-group-item {{ task.isDone ? 'list-group-item-success' }}">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+
+                        {# Bouton toggle #}
+                        <div class="btn-group btn-group-sm mt-2 mt-md-0 col-1">
+                            <form method="post" action="{{ path('app_task_edit', {id: task.id}) }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('edit' ~ task.id) }}">
+                                <input type="hidden" name="toggle_done" value="1">
+                                <button class="btn btn-sm">
+                                    <span style="display: inline-block; width: 1.5em; text-align: center;">
+                                        {{ task.isDone ? '✅' : '☐' }}
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+
+                        {# Détails tâche #}
+                        <div class="me-auto col-8">
+                            <div class="fw-bold">{{ task.title }}</div>
+                            <div class="text-muted">{{ task.description }}</div>
+                        </div>
+
+                        {# Boutons actions #}
+                        <div class="btn-group btn-group-sm mt-2 mt-md-0">
+                            <a href="{{ path('app_task_edit', {id: task.id}) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-center">✏️</a>
+                            <a href="{{ path('app_task_show', {id: task.id}) }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center">👁️</a>
+                            <form method="post" action="{{ path('app_task_delete', {id: task.id}) }}" class="btn btn-outline-danger d-inline p-0 m-0" onsubmit="return confirm('Supprimer cette tâche ?');">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+                                <button type="submit" class="btn btn-outline-danger border-0 d-flex align-items-center justify-content-center">🗑️</button>
+                            </form>
+                        </div>
+
+                    </div>
+                </li>
+            {% endfor %}
+        {% endfor %}
+    </ul>
+{% endif %}
+
 		</div>
 	</div>
 {% endblock %}

@@ -18,17 +18,38 @@ final class TaskController extends AbstractController
     #[Route(name: 'app_task_index', methods: ['GET'])]
     public function index(TaskRepository $taskRepository): Response
     {
-        $today = (new \DateTime())->format('Y-m-d');
+         $today = (new \DateTime())->format('Y-m-d');
+
+        $tasks = $taskRepository->findBy(
+            ['taskUser' => $this->getUser()],
+            ['date' => 'ASC']
+        );
+
+        $groupedTasks = [];
+        foreach ($tasks as $task) {
+            $dateKey = $task->getDate()->format('Y-m-d');
+
+            if (!isset($groupedTasks[$dateKey])) {
+                $groupedTasks[$dateKey] = [
+                    'date' => $task->getDate(),
+                    'tasks' => [],
+                    'doneCount' => 0,
+                ];
+            }
+
+            $groupedTasks[$dateKey]['tasks'][] = $task;
+
+            if ($task->isDone()) {
+                $groupedTasks[$dateKey]['doneCount']++;
+            }
+        }
 
         return $this->render('task/index.html.twig', [
-        'tasks' => $taskRepository->findBy(
-        ['taskUser' => $this->getUser()],
-        ['date' => 'ASC']
-    ),
-    'today' => $today,
-    
-]);
+            'groupedTasks' => $groupedTasks,
+            'today' => $today,
+        ]);
     }
+
 
     #[Route('/new', name: 'app_task_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -37,7 +58,9 @@ final class TaskController extends AbstractController
         $task->settaskUser($this->getUser());
         $task->setCreatedAt(new \DateTimeImmutable());
         $task->setIsDone("0");
-        $form = $this->createForm(TaskForm::class, $task);
+        $form = $this->createForm(TaskForm::class, $task, [
+        'user' => $this->getUser(), // 🔑 clé indispensable pour filtrer les tags
+    ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
