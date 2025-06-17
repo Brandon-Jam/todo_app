@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block content %}
-	<h1 class="text-danger">🗒️ Ma To-Do List</h1>
+	<h1 class="text-danger">🗒️ Mes tâches</h1>
 
 	<div class="card shadow-sm">
 		<div class="card-body">
@@ -71,7 +71,6 @@
                         {# Boutons actions #}
                         <div class="btn-group btn-group-sm mt-2 mt-md-0">
                             <a href="{{ path('app_task_edit', {id: task.id}) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-center">✏️</a>
-                            <a href="{{ path('app_task_show', {id: task.id}) }}" class="btn btn-outline-secondary d-flex align-items-center justify-content-center">👁️</a>
                             <form method="post" action="{{ path('app_task_delete', {id: task.id}) }}" class="btn btn-outline-danger d-inline p-0 m-0" onsubmit="return confirm('Supprimer cette tâche ?');">
                                 <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
                                 <button type="submit" class="btn btn-outline-danger border-0 d-flex align-items-center justify-content-center">🗑️</button>

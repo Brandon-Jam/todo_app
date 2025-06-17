@@ -20,7 +20,9 @@ class TaskForm extends AbstractType
         $user = $options['user'];
 
         $builder
-            ->add('title')
+            ->add('title', null, [
+                'label' => 'Titre',
+            ])
             ->add('description')
             ->add('date', DateType::class, [
                 'widget' => 'single_text',

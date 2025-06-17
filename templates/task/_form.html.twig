@@ -18,6 +18,19 @@
 	{{ form_errors(form.description) }}
 </div>
 
+<div class="mb-3 col-8">
+    {{ form_label(form.tags, null, {'label_attr': {'class': 'form-label'}}) }}
+    <div class="tags-checkbox-group">
+        {% for child in form.tags %}
+            <div class="form-check d-inline-block me-3 mb-2">
+                {{ form_widget(child) }}
+                {{ form_label(child, null, {'label_attr': {'class': 'form-check-label ms-1'}}) }}
+            </div>
+        {% endfor %}
+    </div>
+    {{ form_errors(form.tags) }}
+</div>
+
 <button class="btn btn-primary">
 	{{ button_label|default('Enregistrer') }}
 </button>

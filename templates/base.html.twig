@@ -14,7 +14,13 @@
             <div class="container my-5">
             <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 px-3">
     <div class="container-fluid">
-        <a class="navbar-brand fw-bold" href="{{ path('app_task_index') }}">📝 Mes Tâches</a>
+        <a class="navbar-brand fw-bold" href="{{ path('app_task_index') }}">Mes Tâches</a>
+ <a class="navbar-brand fw-bold" href="{{ path('app_tag_index') }}">Mes Tags</a>
+ {% if app.user %}
+    <a class="navbar-brand fw-bold" href="{{ path('app_logout') }}">Déconnexion</a>
+{% else %}
+    <a class="navbar-brand fw-bold" href="{{ path('app_login') }}">Connexion</a>
+{% endif %}
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>

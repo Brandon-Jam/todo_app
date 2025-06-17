@@ -2,26 +2,39 @@
 
 {% block title %}Tag index{% endblock %}
 
-{% block body %}
-    <h1>Tag index</h1>
-
+{% block content %}
+    <h1>Mes tags</h1>
+    <div class="card shadow-sm">
+		<div class="card-body">
+        <form method="post" action="{{ path('app_tag_new') }}" class="d-flex gap-2 mb-3">
+				<button type="submit" class="btn btn-success">Ajouter</button>
+			</form>
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>actions</th>
+                <th>Nom</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
         {% for tag in tags %}
-            <tr>
-                <td>{{ tag.name }}</td>
-                <td>
-                {% if tag.owner and tag.owner == app.user %}
-                    <a href="{{ path('app_tag_edit', {'id': tag.id}) }}">edit</a>
-                {% endif %}
-                </td>
-            </tr>
+      <tr>
+    <td>{{ tag.name }}</td>
+    <td>
+        {% if tag.owner and tag.owner == app.user %}
+            <div class="btn-group btn-group-sm mt-2 mt-md-0">
+                <a href="{{ path('app_tag_edit', {'id': tag.id}) }}" class="btn btn-outline-primary d-flex align-items-center justify-content-center">✏️</a>
+
+                <form method="post" action="{{ path('app_tag_delete', {'id': tag.id}) }}" class="btn btn-outline-danger d-inline p-0 m-0"
+                      onsubmit="return confirm('Supprimer ce tag ?');">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ tag.id) }}">
+                    <button type="submit" class="btn btn-outline-danger border-0 d-flex align-items-center justify-content-center">🗑️</button>
+                </form>
+            </div>
+        {% endif %}
+   
+    </td>
+</tr>
         {% else %}
             <tr>
                 <td colspan="3">no records found</td>
@@ -29,6 +42,6 @@
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_tag_new') }}">Create new</a>
+</div>
+</div>
 {% endblock %}
