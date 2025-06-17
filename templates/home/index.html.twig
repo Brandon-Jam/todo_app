@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil{% endblock %}
+
+{% block content %}
+    <div class="container mt-4">
+        <h1 class="mb-3">Bienvenue sur ma to do listS 👋</h1>
+        <p class="lead">Commencer par créer un compte ou bien connecter vous afin plannifier votre emploi du temps</p>
+        <a href="{{ path('app_register') }}" class="btn btn-primary mt-3">Créer un compte</a>
+    </div>
+{% endblock %}

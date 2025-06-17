@@ -1,19 +1,29 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Register
+{% endblock %}
 
-{% block body %}
-    <h1>Register</h1>
+{% block content %}
+	<h1>Register</h1>
 
-    {{ form_errors(registrationForm) }}
+	{{ form_errors(registrationForm) }}
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+	{{ form_start(registrationForm) }}
+
+	<div class="mb-3 col-8">
+		{{ form_label(registrationForm.email, null, {'label_attr': {'class': 'form-label'}}) }}
+		{{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+	</div>
+
+    <div class="mb-3 col-8">
+	{{ form_label(registrationForm.plainPassword,  'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+        {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+    </div>
+
+
+	<button class="btn btn-primary">
+		{{ button_label|default('Enregistrer') }}
+	</button>
+	{{ form_end(registrationForm) }}
 {% endblock %}
